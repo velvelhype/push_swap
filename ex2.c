@@ -52,9 +52,51 @@ void    sa(t_list *list)
     next->value = esc;
 }
 
-void    pb()
+void    cut(t_list *a, t_list *c)
 {
-    
+    a->next = c;
+    c->prev = a;
+}
+
+void    insert(t_list *a, t_list *b, t_list *c)
+{
+    a->next = b;
+    c->prev = b;
+    b->next = c;
+    b->prev = a;
+}
+
+void    pb(t_list *a_dummy, t_list *b_dummy)
+{
+    t_list *a1 = a_dummy->next;
+    t_list *a2 = a1->next;
+    t_list *b1 = b_dummy->next;
+    t_list *b2 = b1->next;
+
+    cut (a_dummy, a2);
+    insert  (b_dummy, a1, b1);
+}
+
+void    ra(t_list *dum)
+{
+    t_list *head;
+
+    head = dum->next;
+    dum->value = head->value;
+    dum->dum_check = 0;
+    head->dum_check = 1;
+    // dum = head;
+}
+
+void    rra(t_list *dum)
+{
+    t_list *tail;
+
+    tail = dum->prev;
+    dum->value = tail->value;
+    dum->dum_check = 0;
+    tail->dum_check = 1;
+    dum = tail;
 }
 
 int main(int argc, char **argv)
@@ -76,12 +118,23 @@ int main(int argc, char **argv)
         c++;
     }
 
-    sa(a_stack);
-
-    printf("gonna check the stacks\n");
-    while(a_stack->dum_check != 1)
+    // sa(a_stack);
+    // pb(a_dummy, b_dummy);
+    ra(a_dummy);
+    printf("gonna check the a_stacks\n");
+    //a_dummy = a_dummy->prev;
+    //a_dummy = a_dummy->next;
+    // a_dummy = a_dummy->next;
+    while(a_dummy->dum_check != 1)
     {
-        printf("%d\n",a_stack->value);
-        a_stack = a_stack->next;
+        printf("%d\n",a_dummy->value);
+        a_dummy = a_dummy->next;
+    }
+    // b_dummy = b_dummy->next;
+    printf("gonna check the b_stacks\n");
+    while(b_dummy->dum_check != 1)
+    {
+        printf("%d\n", b_dummy->value);
+        b_dummy = b_dummy->next;
     }
 }
