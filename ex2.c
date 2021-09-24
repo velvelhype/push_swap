@@ -77,7 +77,7 @@ void    pb(t_list *a_dummy, t_list *b_dummy)
     insert  (b_dummy, a1, b1);
 }
 
-void    ra(t_list *dum)
+t_list*    ra(t_list *dum)
 {
     t_list *head;
 
@@ -85,10 +85,10 @@ void    ra(t_list *dum)
     dum->value = head->value;
     dum->dum_check = 0;
     head->dum_check = 1;
-    // dum = head;
+    return(head);
 }
 
-void    rra(t_list *dum)
+t_list*    rra(t_list *dum)
 {
     t_list *tail;
 
@@ -96,10 +96,67 @@ void    rra(t_list *dum)
     dum->value = tail->value;
     dum->dum_check = 0;
     tail->dum_check = 1;
-    dum = tail;
+    return(tail);
 }
 
-int main(int argc, char **argv)
+int    is_sorted(t_list *a)
+{
+    t_list *cur;
+    t_list *nxt;
+
+    cur = a->next;
+    nxt = cur->next;
+    while(cur->value < nxt->value && cur->dum_check == 0)
+    {
+        cur = cur->next;
+        nxt = nxt->next;
+        if (nxt->dum_check == 1)
+            return 1;
+    }
+    return 0;
+};
+
+t_list*    three_sort(t_list *dum)
+{
+    t_list  *one;
+    t_list  *two;
+    t_list  *three;
+
+    one = dum->next;
+    two = one->next;
+    three = two->next;
+
+    //printf("%d %d %d\n", one->value, two->value, three->value);
+
+    if(is_sorted(dum) == 1)
+        return dum;
+
+    if(one->value > two->value)
+    {
+        if(two->value > three->value)
+            {
+                sa(one);
+                dum = rra(dum);
+            }
+        else if (one->value < three->value)
+            sa(one);
+        else
+            dum = ra(dum);
+    }
+    else if (one->value < three->value)
+        {
+            sa(one);
+            dum = ra(dum);
+        }
+    else
+        dum = rra(dum);
+    
+    //printf("%d %d %d\n", one->value, two->value, three->value);
+
+    return(dum);
+}
+
+int     main(int argc, char **argv)
 {
     t_list  *a_dummy = malloc(sizeof(t_list));
     t_list  *b_dummy = malloc(sizeof(t_list));
@@ -118,19 +175,18 @@ int main(int argc, char **argv)
         c++;
     }
 
-    // sa(a_stack);
-    // pb(a_dummy, b_dummy);
-    ra(a_dummy);
+
+    if(argc == 4)
+        a_dummy = three_sort(a_dummy);
+    printf("is sorted %d\n", is_sorted(a_dummy));
+
     printf("gonna check the a_stacks\n");
-    //a_dummy = a_dummy->prev;
-    //a_dummy = a_dummy->next;
-    // a_dummy = a_dummy->next;
+    a_dummy = a_dummy->next;
     while(a_dummy->dum_check != 1)
     {
         printf("%d\n",a_dummy->value);
         a_dummy = a_dummy->next;
     }
-    // b_dummy = b_dummy->next;
     printf("gonna check the b_stacks\n");
     while(b_dummy->dum_check != 1)
     {
